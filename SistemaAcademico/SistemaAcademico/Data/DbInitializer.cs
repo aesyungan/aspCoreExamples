@@ -12,7 +12,9 @@ namespace SistemaAcademico.Data
     {
         public static void Initialier(SistemaAcademicoContext context)
         {
-            context.Database.EnsureCreated();//cre la base de datos
+            context.Database.EnsureCreated();
+            //cre la base de datos
+
             //buscar si existen registros  en la tabla categoria
 
             if (context.Categoria.Any()) {//si hay categorias solo retorna eso y ya
