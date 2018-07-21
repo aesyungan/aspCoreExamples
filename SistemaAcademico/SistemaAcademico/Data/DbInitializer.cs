@@ -14,6 +14,7 @@ namespace SistemaAcademico.Data
         {
             context.Database.EnsureCreated();//cre la base de datos
             //buscar si existen registros  en la tabla categoria
+
             if (context.Categoria.Any()) {//si hay categorias solo retorna eso y ya
                 return; 
             }
