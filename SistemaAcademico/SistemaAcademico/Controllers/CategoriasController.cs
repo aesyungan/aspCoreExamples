@@ -20,22 +20,32 @@ namespace SistemaAcademico.Controllers
         }
 
         // GET: Categorias
-        public async Task<IActionResult> Index(string sortOrder, string searchigString)
+        public async Task<IActionResult> Index(string sortOrder,
+            string currentFilter, string searchigString, int? page)
         {
             //envia el parametro a la vista
             //para ordenar
             ViewData["NombreSortParm"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
             ViewData["DescripcionSortParm"] = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+            if (searchigString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchigString = currentFilter;
+            }
             ViewData["CurrentFilter"] = searchigString;
+            ViewData["CurrentSort"] = sortOrder;
 
             var categorias = from s in _context.Categoria select s;
 
             if (!String.IsNullOrEmpty(searchigString))
             {
-                categorias = categorias.Where(s=>s.Nombre.Contains(searchigString)||s.Descripcion.Contains(searchigString));
+                categorias = categorias.Where(s => s.Nombre.Contains(searchigString) || s.Descripcion.Contains(searchigString));
             }
 
-           
+
             switch (sortOrder)
             {
                 case "nombre_desc":
@@ -48,13 +58,14 @@ namespace SistemaAcademico.Controllers
                     categorias = categorias.OrderBy(s => s.Descripcion);
                     break;
                 default:
-                    categorias = categorias.OrderBy(s=>s.Nombre);
+                    categorias = categorias.OrderBy(s => s.Nombre);
                     break;
             }
-
-            return View(await categorias.AsNoTracking().ToListAsync());//listado categoria de base de datos
+            int pageSize = 3;//paginnacion de 3 en 3
+            //page?? si tiene un valor si tiene page y si no devuelve uno
+            return View(await Paginacion<Categoria>.CreateAsync(categorias.AsNoTracking(), page ?? 1, pageSize));
+            //return View(await categorias.AsNoTracking().ToListAsync());//listado categoria de base de datos
         }
-
         // GET: Categorias/Details/5
         public async Task<IActionResult> Details(int? id)
         {

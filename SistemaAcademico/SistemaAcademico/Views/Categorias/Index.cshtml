@@ -1,5 +1,4 @@
-﻿@model IEnumerable<sistema.Models.Categoria>
-
+﻿@model Paginacion<sistema.Models.Categoria>
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,7 +6,7 @@
 <h2>Categorias</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Nuevo</a>
 </p>
 <form asp-action="Index" method="get">
     <div class=" no-color">
@@ -15,16 +14,14 @@
             <div class="row">
                 <div class="col-md-8">
                     <label class="col-md-2">Filtro</label>
-                    <input placeholder="buscar por nombre o Descripción" class="col-md-10" type="text" name="searchigString" value="@ViewData["CurrentFilter"] " />
+                    <input placeholder="buscar por nombre o Descripción" class="col-md-10" type="text" name="searchigString" value="@ViewData["CurrentFilter"]" />
                 </div>
                 <div class="col-md-2">
                     <input type="submit" value="buscar" class="btn btn-primary" />
                 </div>
-                <div class="col-md-2">
-                    <a asp-action="Index">Todos los Registros</a>
-                </div>
+
             </div>
-           
+
         </p>
     </div>
 </form>
@@ -32,13 +29,13 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParm"]"> @Html.DisplayNameFor(model => model.Nombre)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NombreSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]"> Nombre</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescripcionSortParm"]">    @Html.DisplayNameFor(model => model.Descripcion)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescripcionSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">   Descripción</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
+                Estado
             </th>
             <th></th>
         </tr>
@@ -65,3 +62,72 @@
         }
     </tbody>
 </table>
+
+@{
+    //para preview y next
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<div class="paginacion">
+    <div class="content-paginacion">
+
+        <!--anterios-->
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-page="@(Model.PageIndex-1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @prevDisabled">
+            Anterior
+        </a>
+        <!--para q muestre todas las paginas q tiene-->
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (Model.PageIndex == i)
+            {
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-page="@i"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   class="btn btn-primary ">
+                    @i
+                </a>
+
+            }
+            else
+            {
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-page="@i"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   class="btn btn-default ">
+                    @i
+                </a>
+
+            }
+
+        }
+        <!--siguiente-->
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-page="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @nextDisabled">
+            Siguiente
+        </a>
+    </div>
+    <div class="todos-paginacion">
+        <form asp-action="Index" method="get">
+            <div class=" no-color">
+                <p>
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <a asp-action="Index">Todos los Registros</a>| Registros mostrados @Model.TotalR
+                        </div>
+                    </div>
+
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

@@ -23,6 +23,16 @@ body {
     width: 100%;
 }
 
+.content-paginacion {
+}
+
+.paginacion {
+    display: flex;
+    justify-content: space-between;
+}
+
+.todos-paginacion {
+}
 /* QR code generator */
 #qrCode {
     margin: 15px;
